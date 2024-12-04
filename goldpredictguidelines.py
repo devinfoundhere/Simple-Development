@@ -43,7 +43,6 @@ def collect_data():
     # Storing the data
     store_data(collected_data)
 
-# Parsing the data to a standardized format
 def parse_data(exchange_name, data):
     parsed_data = {
         'exchange': exchange_name,
@@ -53,13 +52,12 @@ def parse_data(exchange_name, data):
     }
     return parsed_data
 
-# Storing the data into PostgreSQL
 def store_data(data):
     engine = create_engine('postgresql://user:password@localhost:5432/gold_db')
     df = pd.DataFrame(data)
     df.to_sql('gold_price_data', engine, if_exists='append', index=False)
 
-# Step 2: Feature Engineering
+# Step 2: Feature Eng
 def create_features():
     # Load data from PostgreSQL
     engine = create_engine('postgresql://user:password@localhost:5432/gold_db')
@@ -71,40 +69,34 @@ def create_features():
     df['200_day_MA'] = df['price'].rolling(window=200).mean()
     df['volatility'] = df['price'].rolling(window=50).std()
 
-    # Adding Economic Indicators
     economic_indicators = load_economic_indicators()
     df = pd.merge(df, economic_indicators, on='timestamp', how='left')
 
-    # Adding Technical Indicators
     df['RSI'] = calculate_rsi(df['price'])
     df['MACD'] = calculate_macd(df['price'])
     df['Bollinger_Bands'] = calculate_bollinger_bands(df['price'])
 
     store_features(df)
 
-# Step 3: Prediction Model
+# Step 3: Try to Predict HA
 def train_model():
     # Load engineered features
     engine = create_engine('postgresql://user:password@localhost:5432/gold_db')
     query = "SELECT * FROM feature_data"
     df = pd.read_sql(query, engine)
     
-    # Feature Selection
     features = ['50_day_MA', '200_day_MA', 'volatility', 'RSI', 'MACD', 'Bollinger_Bands']
     X = df[features]
     y = df['target']  # Whether price increases or decreases
 
-    # Split data for training and testing
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Model Training - Using Random Forest
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     
-    # Save the trained model
     save_model(model)
 
-# Step 4: Real-Time Prediction
+# Step 4: Real-Time
 def real_time_prediction():
     consumer = KafkaConsumer('gold_prices', bootstrap_servers='localhost:9092')
     model = load_model()
@@ -114,7 +106,7 @@ def real_time_prediction():
         prediction = predict(data, model)
         store_prediction(data, prediction)
 
-# Step 5: Dashboard Visualization
+# Step 5: Dashboard Vis
 def run_dashboard():
     app = dash.Dash(__name__)
 
@@ -127,7 +119,7 @@ def run_dashboard():
 
     app.run_server(debug=True)
 
-# Helper functions for indicators
+# Helper functions if needed??
 def calculate_rsi(prices):
     # RSI Calculation
     return np.random.random(len(prices)) * 100  # Simplified for demonstration purposes
@@ -172,7 +164,7 @@ def main():
     # Step 4: Real-Time Streaming
     stream_data_to_kafka()
 
-    # Step 5: Run Dashboard
+    # Step 5: Run Dash
     run_dashboard()
 
     while True:
