@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Changing Text</title>
+  <style>
+    @keyframes colorChange {
+      0% { color: #a6dcef; }
+      25% { color: #b8e7f2; }
+      50% { color: #d5f3fc; }
+      75% { color: #cce3f4; }
+      100% { color: #a6dcef; }
+    }
+
+    .color-changing-text {
+      font-family: 'Roboto Mono', monospace;
+      font-weight: bold;
+      font-size: 3.0em;
+      text-align: left;
+      animation: colorChange 8s infinite;
+      color: #a6dcef;
+      padding: 0px;
+      box-sizing: border-box;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .item {
+      flex: 1 1 calc(100% - 40px); /* Grow and shrink with a minimum width, accounting for padding */
+      margin: 5px;
+      box-sizing: border-box;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="color-changing-text">Text</div>
+  </div>
+</body>
+</html>
